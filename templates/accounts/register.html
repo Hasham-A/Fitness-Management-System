@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block title %}Register — FitAI{% endblock %}
+{% block auth_content %}
+<div class="auth-page">
+  <div class="auth-layout">
+    <div class="auth-info">
+      <span class="badge"><i class="bi bi-door-open"></i> Start your journey</span>
+      <h1>Create your FitAI account</h1>
+      <p>Build a smarter fitness routine with workout and meal tracking plus AI-powered suggestions. Sign up once and manage your progress from any device.</p>
+    </div>
+
+    <div class="auth-card">
+      <h2>Create account</h2>
+
+      {% if form.non_field_errors %}
+        {% for err in form.non_field_errors %}
+          <div class="alert-custom alert-danger-custom">{{ err }}</div>
+        {% endfor %}
+      {% endif %}
+    {% comment %} <!-- Google Signup -->
+    <a href="{% provider_login_url 'google' %}" class="btn btn-google btn-full">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" style="vertical-align:middle; margin-right:8px;">
+        Sign up with Google
+    </a>
+
+    <div class="divider"><span>or register with username</span></div> {% endcomment %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label">First Name</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:4px;">{{ form.first_name.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Last Name</label>
+            {{ form.last_name }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:4px;">{{ form.username.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-12">
+            <label class="form-label">Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:4px;">{{ form.email.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Password</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:4px;">{{ form.password.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Confirm Password</label>
+            {{ form.password2 }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary-custom mt-4 w-100 py-3">Create Account</button>
+      </form>
+
+      <a href="{% url 'accounts:login' %}" class="btn-secondary-custom mt-3">Already have an account? Sign in</a>
+      <p style="text-align:center;margin-top:14px;font-size:14px;color:#64748B;">
+        Or continue with Google above.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

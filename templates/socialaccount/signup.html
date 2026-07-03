@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Complete Your Signup — FitAI{% endblock %}
+{% block auth_content %}
+<div class="auth-page">
+  <div class="auth-layout">
+    <div class="auth-info">
+      <span class="badge"><i class="bi bi-door-open"></i> Welcome to FitAI</span>
+      <h1>Complete Your Signup</h1>
+      <p>You're almost there! Just a few more details to set up your FitAI account. This helps us personalize your experience and provide accurate fitness recommendations.</p>
+    </div>
+
+    <div class="auth-card">
+      <h2>Finish Setting Up</h2>
+      <p class="lead">{% trans "As a new user, please complete the following:" %}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">{% trans "Username" %}</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div style="color:#EF4444;font-size:12px;margin-top:4px;">{{ form.username.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Email" %}</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <div style="color:#EF4444;font-size:12px;margin-top:4px;">{{ form.email.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <button type="submit" class="btn-primary-custom w-100 py-3">{% trans "Complete Signup" %}</button>
+      </form>
+
+      <a href="{% url 'accounts:login' %}" class="btn-secondary-custom mt-3">Back to login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

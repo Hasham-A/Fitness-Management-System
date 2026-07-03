@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{% if is_update %}Update Meal{% else %}Log Meal{% endif %} — FitAI{% endblock %}
+{% block page_title %}{% if is_update %}Update Meal{% else %}Log Meal{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card p-4">
+      <div class="card-header-custom mb-4">
+        <i class="bi bi-egg-fried" style="color:var(--accent);"></i>
+        {% if is_update %}Update Meal{% else %}Record a Meal{% endif %}
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Meal Name</label>
+            {{ form.meal_name }}
+            {% if form.meal_name.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.meal_name.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Meal Type</label>
+            {{ form.meal_type }}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Calories (kcal)</label>
+            {{ form.calories }}
+            {% if form.calories.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.calories.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div style="padding:0 8px;margin-top:4px;">
+            <div style="font-size:12px;font-weight:700;color:var(--muted);
+                 letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;">
+              Macronutrients (optional)
+            </div>
+            <div class="row g-3">
+              <div class="col-4">
+                <label class="form-label">Protein (g)</label>
+                {{ form.protein }}
+              </div>
+              <div class="col-4">
+                <label class="form-label">Carbs (g)</label>
+                {{ form.carbs }}
+              </div>
+              <div class="col-4">
+                <label class="form-label">Fats (g)</label>
+                {{ form.fats }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+          <button type="submit" class="btn-accent">
+            {% if is_update %}Save Changes{% else %}🍽 Save Meal{% endif %}
+          </button>
+          <a href="{% url 'meals:history' %}" style="color:var(--muted);
+             padding:10px 18px;font-size:14px;text-decoration:none;">View History</a>
+          {% if is_update %}
+            <a href="{% url 'meals:delete' meal.pk %}"
+               style="color:#B91C1C;padding:10px 18px;font-size:14px;text-decoration:none;">
+               Delete Meal
+            </a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — FitAI{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── Stat Cards ─────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <div class="stat-label">Workouts (30d)</div>
+        <div class="stat-value">{{ total_workouts }}</div>
+      </div>
+      <div class="stat-icon" style="background:#EEF2FF;color:#4F46E5;">
+        <i class="bi bi-lightning-charge-fill"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <div class="stat-label">Calories Burned (30d)</div>
+        <div class="stat-value">{{ total_calories }}</div>
+      </div>
+      <div class="stat-icon" style="background:#FEF3C7;color:#F59E0B;">
+        <i class="bi bi-fire"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <div class="stat-label">Total Steps (30d)</div>
+        <div class="stat-value">{{ total_steps }}</div>
+      </div>
+      <div class="stat-icon" style="background:#D1FAE5;color:#10B981;">
+        <i class="bi bi-person-walking"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card d-flex align-items-center justify-content-between">
+      <div>
+        <div class="stat-label">Net Calories (30d)</div>
+        <div class="stat-value {% if net_calories > 0 %}text-danger{% endif %}">
+          {{ net_calories }}
+        </div>
+      </div>
+      <div class="stat-icon" style="background:#FCE7F3;color:#DB2777;">
+        <i class="bi bi-graph-up-arrow"></i>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Charts Row ──────────────────────────────────────────────── -->
+<div class="row g-4 mb-4">
+
+  <!-- Calories Burned vs Intake -->
+  <div class="col-lg-8">
+    <div class="card p-4">
+      <div class="card-header-custom mb-4">Calories — Burned vs Intake (Last 14 Days)</div>
+      <canvas id="calChart" height="100"></canvas>
+    </div>
+  </div>
+
+  <!-- Body Fat + Profile snapshot -->
+  <div class="col-lg-4">
+    <div class="card p-4 h-100">
+      <div class="card-header-custom mb-4">Body Overview</div>
+
+      {% if bfp %}
+      <div style="text-align:center;padding:12px 0;">
+        <div style="font-size:48px;font-weight:800;font-family:'Space Grotesk',sans-serif;
+             color:var(--accent);">{{ bfp }}%</div>
+        <div style="color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.5px;">
+          ESTIMATED BODY FAT
+        </div>
+      </div>
+      {% endif %}
+
+      {% if profile %}
+      <div style="margin-top:16px;">
+        {% if profile.bmi %}
+        <div style="display:flex;justify-content:space-between;padding:10px 0;
+             border-bottom:1px solid var(--border);font-size:14px;">
+          <span style="color:var(--muted);">BMI</span>
+          <span style="font-weight:600;">{{ profile.bmi }} — {{ profile.bmi_category }}</span>
+        </div>
+        {% endif %}
+        <div style="display:flex;justify-content:space-between;padding:10px 0;
+             border-bottom:1px solid var(--border);font-size:14px;">
+          <span style="color:var(--muted);">Goal</span>
+          <span style="font-weight:600;">{{ profile.get_fitness_goal_display }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:14px;">
+          <span style="color:var(--muted);">Food Intake (30d)</span>
+          <span style="font-weight:600;">{{ total_intake }} kcal</span>
+        </div>
+      </div>
+      {% else %}
+      <div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">
+        <a href="{% url 'accounts:profile' %}" class="btn-primary-custom">Complete your profile</a>
+        <p style="margin-top:10px;font-size:12px;">to see AI body analysis</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Steps Chart ─────────────────────────────────────────────── -->
+<div class="row g-4 mb-4">
+  <div class="col-12">
+    <div class="card p-4">
+      <div class="card-header-custom mb-4">Daily Steps (Last 14 Days)</div>
+      <canvas id="stepsChart" height="60"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── Quick Actions ───────────────────────────────────────────── -->
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card p-4">
+      <div class="card-header-custom mb-3">Quick Actions</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="{% url 'workouts:log' %}"         class="btn-primary-custom">⚡ Log Workout</a>
+        <a href="{% url 'meals:log' %}"            class="btn-accent">🍽 Log Meal</a>
+        <a href="{% url 'recommendations:index' %}" style="background:#F3F4F6;color:#374151;
+           padding:10px 22px;border-radius:10px;font-weight:600;font-size:14px;
+           text-decoration:none;">🤖 Get AI Plan</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const labels    = {{ labels_json|safe }};
+  const burnData  = {{ data_burn_json|safe }};
+  const intakeData= {{ data_intake_json|safe }};
+  const stepsData = {{ data_steps_json|safe }};
+
+  // ── Calories chart ──────────────────────────────────────────────
+  new Chart(document.getElementById('calChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Calories Burned',
+          data: burnData,
+          backgroundColor: 'rgba(79,70,229,0.8)',
+          borderRadius: 6,
+        },
+        {
+          label: 'Calories Consumed',
+          data: intakeData,
+          backgroundColor: 'rgba(16,185,129,0.7)',
+          borderRadius: 6,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top' } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, grid: { color: '#F1F5F9' } }
+      }
+    }
+  });
+
+  // ── Steps chart ─────────────────────────────────────────────────
+  new Chart(document.getElementById('stepsChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Steps',
+        data: stepsData,
+        borderColor: '#10B981',
+        backgroundColor: 'rgba(16,185,129,0.1)',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        tension: 0.4,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, grid: { color: '#F1F5F9' } }
+      }
+    }
+  });
+</script>
+{% endblock %}

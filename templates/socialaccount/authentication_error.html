@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Authentication Error — FitAI{% endblock %}
+{% block auth_content %}
+<div class="auth-page">
+  <div class="auth-layout">
+    <div class="auth-info">
+      <span class="badge"><i class="bi bi-exclamation-triangle"></i> Oops</span>
+      <h1>Authentication Failed</h1>
+      <p>{% trans "We encountered an issue while trying to sign you in with Google. This might be a temporary glitch. Please try again or use your username and password to log in." %}</p>
+    </div>
+
+    <div class="auth-card">
+      <h2>{% trans "Something went wrong" %}</h2>
+      <p class="lead" style="color:#EF4444;">{{ message }}</p>
+
+      <a href="{% url 'accounts:login' %}" class="btn-primary-custom w-100 py-3">{% trans "Try Again" %}</a>
+      <a href="{% url 'accounts:register' %}" class="btn-secondary-custom mt-3">{% trans "Create Account Instead" %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

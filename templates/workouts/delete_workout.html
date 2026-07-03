@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Delete Workout — FitAI{% endblock %}
+{% block page_title %}Delete Workout{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card p-4" style="text-align:center;">
+      <div class="card-header-custom mb-4">
+        <i class="bi bi-trash" style="color:#B91C1C;"></i>
+        Confirm Delete
+      </div>
+      <p style="font-size:16px;line-height:1.6;margin-bottom:24px;">
+        Are you sure you want to delete the workout session <strong>{{ workout.get_workout_type_display }}</strong> logged on {{ workout.date }}?
+        This action cannot be undone.
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+          <button type="submit" class="btn-primary-custom" style="background:#B91C1C;border-color:#B91C1C;">Delete Workout</button>
+          <a href="{% url 'workouts:update' workout.pk %}" class="btn-secondary-custom" style="color:var(--muted);padding:10px 18px;text-decoration:none;">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

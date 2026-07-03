@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}My Profile — FitAI{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+
+  <!-- BMI Card -->
+  <div class="col-md-4">
+    <div class="card p-4 h-100">
+      <div style="text-align:center;padding:12px 0;">
+        <div style="font-size:56px;font-weight:800;font-family:'Space Grotesk',sans-serif;
+             color:var(--primary);">
+          {{ profile.bmi|default:"—" }}
+        </div>
+        <div style="color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.5px;">
+          BODY MASS INDEX
+        </div>
+        <div style="margin-top:8px;">
+          {% with cat=profile.bmi_category %}
+          <span class="badge-custom"
+            style="background:{% if cat == 'Normal' %}#D1FAE5;color:#065F46
+                   {% elif cat == 'Underweight' %}#FEF3C7;color:#92400E
+                   {% else %}#FEE2E2;color:#991B1B{% endif %};">
+            {{ cat }}
+          </span>
+          {% endwith %}
+        </div>
+      </div>
+      <hr style="border-color:var(--border);">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
+        <div style="text-align:center;">
+          <div style="font-size:20px;font-weight:700;">{{ profile.weight|default:"—" }}</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600;">WEIGHT (kg)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:20px;font-weight:700;">{{ profile.height|default:"—" }}</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600;">HEIGHT (cm)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Form -->
+  <div class="col-md-8">
+    <div class="card p-4">
+      <div class="card-header-custom mb-4">Update Your Profile</div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label class="form-label">Age</label>
+            {{ form.age }}
+            {% if form.age.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.age.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Gender</label>
+            {{ form.gender }}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Height (cm)</label>
+            {{ form.height }}
+            {% if form.height.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.height.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Weight (kg)</label>
+            {{ form.weight }}
+            {% if form.weight.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.weight.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Waist (cm)</label>
+            {{ form.waist }}
+            {% if form.waist.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.waist.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Chest (cm)</label>
+            {{ form.chest }}
+            {% if form.chest.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.chest.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Hip (cm)</label>
+            {{ form.hip }}
+            {% if form.hip.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.hip.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Thigh (cm)</label>
+            {{ form.thigh }}
+            {% if form.thigh.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.thigh.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Fitness Goal</label>
+            {{ form.fitness_goal }}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Activity Level</label>
+            {{ form.activity_level }}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Experience Level</label>
+            {{ form.experience_level }}
+          </div>
+        </div>
+
+        <div style="margin-top:24px;display:flex;gap:12px;">
+          <button type="submit" class="btn-primary-custom">Save Profile</button>
+          <a href="{% url 'dashboard:home' %}" style="color:var(--muted);
+             padding:10px 18px;font-size:14px;text-decoration:none;">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

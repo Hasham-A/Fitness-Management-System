@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% block auth_content %}
+<div class="auth-page">
+  <div class="auth-layout">
+    <div class="auth-info">
+      <span class="badge"><i class="bi bi-lightning-charge-fill"></i> Faster sign in</span>
+      <h1>Welcome back to FitAI</h1>
+      <p>Track workouts, log meals, and get personalized recommendations with the power of AI. Sign in to continue your fitness journey in one beautiful dashboard.</p>
+    </div>
+
+    <div class="auth-card">
+      <h2>Sign in</h2>
+      <p class="lead">Enter your account details to access the app.</p>
+
+      {% if error %}
+        <div class="alert-custom alert-danger-custom">{{ error }}</div>
+      {% endif %}
+
+    {% comment %} <!-- Google Login -->
+    <a href="{% provider_login_url 'google' %}" class="btn btn-google btn-full">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" style="vertical-align:middle; margin-right:8px;">
+        Continue with Google
+    </a>
+
+    <div class="divider"><span>or login with username</span></div> {% endcomment %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn-primary-custom w-100 py-3">Sign In</button>
+      </form>
+
+      <a href="{% url 'accounts:register' %}" class="btn-secondary-custom mt-3">Create a free account</a>
+      <p style="text-align:center;margin-top:14px;font-size:14px;color:#64748B;">
+        Don't have an account?
+        <a href="{% url 'accounts:register' %}" style="color:#4F46E5;font-weight:600;">Create one</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{% if is_update %}Update Workout{% else %}Log Workout{% endif %} — FitAI{% endblock %}
+{% block page_title %}{% if is_update %}Update Workout{% else %}Log Workout{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <div class="card p-4">
+      <div class="card-header-custom mb-4">
+        <i class="bi bi-lightning-charge-fill" style="color:var(--primary);"></i>
+        {% if is_update %}Update Workout{% else %}Record a New Workout{% endif %}
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+
+          <div class="col-12">
+            <label class="form-label">Workout Type</label>
+            {{ form.workout_type }}
+            {% if form.workout_type.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.workout_type.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-sm-4">
+            <label class="form-label">Duration (minutes)</label>
+            {{ form.duration }}
+            {% if form.duration.errors %}
+              <div style="color:#EF4444;font-size:12px;margin-top:3px;">{{ form.duration.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-sm-4">
+            <label class="form-label">Steps Taken</label>
+            {{ form.steps }}
+          </div>
+
+          <div class="col-sm-4">
+            <label class="form-label">Intensity (1–10)</label>
+            {{ form.intensity }}
+          </div>
+
+        </div>
+
+        <!-- Info box -->
+        <div style="background:#EEF2FF;border-radius:10px;padding:14px 16px;
+             margin-top:20px;font-size:13px;color:#3730A3;">
+          <i class="bi bi-info-circle"></i>
+          Our AI will predict your calorie burn based on your workout details and profile data.
+          Make sure your <a href="{% url 'accounts:profile' %}" style="color:#4F46E5;font-weight:600;">profile</a> is up to date for best accuracy.
+        </div>
+
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+          <button type="submit" class="btn-primary-custom">
+            {% if is_update %}Save Changes{% else %}⚡ Log & Predict Calories{% endif %}
+          </button>
+          <a href="{% url 'workouts:history' %}" style="color:var(--muted);
+             padding:10px 18px;font-size:14px;text-decoration:none;">View History</a>
+          {% if is_update %}
+            <a href="{% url 'workouts:delete' workout.pk %}"
+               style="color:#B91C1C;padding:10px 18px;font-size:14px;text-decoration:none;">
+               Delete Workout
+            </a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

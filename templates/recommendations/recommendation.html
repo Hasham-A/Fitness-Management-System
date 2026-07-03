@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}AI Fitness Plan — FitAI{% endblock %}
+{% block page_title %}AI Fitness Plan{% endblock %}
+
+{% block content %}
+
+{% if error %}
+<div class="card p-5" style="text-align:center;">
+  <div style="font-size:48px;margin-bottom:12px;">🤖</div>
+  <div style="color:#EF4444;font-weight:700;font-size:16px;margin-bottom:16px;">{{ error }}</div>
+  <a href="{% url 'accounts:profile' %}" class="btn-primary-custom">Complete Profile</a>
+</div>
+
+{% elif plan %}
+
+<!-- Header -->
+<div style="background:linear-gradient(135deg,#1E1B4B,#4F46E5);border-radius:16px;
+     padding:28px 32px;color:#fff;margin-bottom:28px;">
+  <div style="font-size:11px;font-weight:700;letter-spacing:1px;
+       text-transform:uppercase;color:#C7D2FE;margin-bottom:8px;">
+    🤖 AI-Generated Plan
+  </div>
+  <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;">
+    Your Personalized Fitness Plan
+  </div>
+  <div style="color:#C7D2FE;font-size:14px;margin-top:6px;">
+    Goal: {{ plan.fitness_goal_display }} &nbsp;|&nbsp;
+    Level: {{ plan.experience_level|title }} &nbsp;|&nbsp;
+    {{ plan.workout_days }} training days/week
+  </div>
+</div>
+
+<!-- Macro targets -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="text-align:center;">
+      <div class="stat-label">Daily Calories</div>
+      <div class="stat-value" style="color:#4F46E5;">{{ plan.macros.calories }}</div>
+      <div style="font-size:11px;color:var(--muted);">kcal/day</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="text-align:center;">
+      <div class="stat-label">Protein</div>
+      <div class="stat-value" style="color:#10B981;">{{ plan.macros.protein }}g</div>
+      <div style="font-size:11px;color:var(--muted);">per day</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="text-align:center;">
+      <div class="stat-label">Carbohydrates</div>
+      <div class="stat-value" style="color:#F59E0B;">{{ plan.macros.carbs }}g</div>
+      <div style="font-size:11px;color:var(--muted);">per day</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card" style="text-align:center;">
+      <div class="stat-label">Fats</div>
+      <div class="stat-value" style="color:#EF4444;">{{ plan.macros.fat }}g</div>
+      <div style="font-size:11px;color:var(--muted);">per day</div>
+    </div>
+  </div>
+</div>
+
+<!-- Workout Plan -->
+<div class="card p-4 mb-4">
+  <div class="card-header-custom mb-4">⚡ Weekly Workout Plan ({{ plan.workout_days }} days)</div>
+
+  {% for day in plan.workout_schedule %}
+  <div style="margin-bottom:28px;">
+    <div style="background:#EEF2FF;border-radius:10px;padding:10px 16px;
+         font-weight:700;font-size:14px;color:#3730A3;margin-bottom:12px;">
+      {{ day.day }}
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:#F8FAFC;">
+            <th style="padding:8px 12px;text-align:left;color:#64748B;font-weight:700;
+                 font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+                 border-bottom:2px solid #E2E8F0;">Exercise</th>
+            <th style="padding:8px 12px;text-align:center;color:#64748B;font-weight:700;
+                 font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+                 border-bottom:2px solid #E2E8F0;">Sets</th>
+            <th style="padding:8px 12px;text-align:center;color:#64748B;font-weight:700;
+                 font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+                 border-bottom:2px solid #E2E8F0;">Reps</th>
+            <th style="padding:8px 12px;text-align:center;color:#64748B;font-weight:700;
+                 font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+                 border-bottom:2px solid #E2E8F0;">Rest</th>
+            <th style="padding:8px 12px;text-align:left;color:#64748B;font-weight:700;
+                 font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+                 border-bottom:2px solid #E2E8F0;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ex in day.exercises %}
+          <tr style="border-bottom:1px solid #F1F5F9;">
+            <td style="padding:10px 12px;font-weight:600;">{{ ex.name }}</td>
+            <td style="padding:10px 12px;text-align:center;">{{ ex.sets }}</td>
+            <td style="padding:10px 12px;text-align:center;font-weight:700;
+                 color:#4F46E5;">{{ ex.reps }}</td>
+            <td style="padding:10px 12px;text-align:center;color:#64748B;">{{ ex.rest }}</td>
+            <td style="padding:10px 12px;color:#64748B;font-style:italic;">{{ ex.note }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div style="background:#FEF3C7;border-radius:8px;padding:12px 16px;
+       font-size:13px;color:#92400E;">
+    📅 <strong>Rest Days:</strong> {{ plan.rest_days_note }}
+  </div>
+</div>
+
+<!-- Meal Plan -->
+<div class="card p-4 mb-4">
+  <div class="card-header-custom mb-3">🥗 Daily Meal Plan</div>
+
+  <!-- Principles -->
+  <div style="background:#F0FDF4;border-radius:10px;padding:16px;margin-bottom:20px;">
+    <div style="font-weight:700;font-size:13px;color:#065F46;margin-bottom:10px;">
+      Nutrition Principles
+    </div>
+    {% for p in plan.meal_principles %}
+    <div style="font-size:13px;color:#065F46;padding:3px 0;">✓ {{ p }}</div>
+    {% endfor %}
+  </div>
+
+  <!-- Meals -->
+  {% for meal in plan.meal_plan %}
+  <div style="border:1px solid #E2E8F0;border-radius:12px;padding:16px;margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;
+         margin-bottom:12px;">
+      <div style="font-weight:700;font-size:15px;">{{ meal.meal }}</div>
+      <div style="font-size:11px;background:#EEF2FF;color:#3730A3;
+           padding:4px 10px;border-radius:50px;font-weight:600;">
+        {{ meal.approx_calories }}
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+      {% for item in meal.items %}
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;
+           padding:6px 12px;font-size:13px;">
+        <span style="font-weight:600;">{{ item.food }}</span>
+        <span style="color:#64748B;"> — {{ item.quantity }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% if meal.prep %}
+    <div style="font-size:12px;color:#64748B;font-style:italic;">
+      🍳 {{ meal.prep }}
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <div style="background:#EEF2FF;border-radius:10px;padding:14px 16px;font-size:13px;color:#3730A3;">
+    <strong>Daily Total:</strong> {{ plan.daily_totals }}
+  </div>
+  <div style="background:#FEF3C7;border-radius:10px;padding:14px 16px;
+       font-size:13px;color:#92400E;margin-top:12px;">
+    📊 <strong>Weekly Tip:</strong> {{ plan.weekly_note }}
+  </div>
+</div>
+
+<!-- Disclaimer -->
+<div style="background:#FEE2E2;border-radius:10px;padding:14px 18px;
+     font-size:13px;color:#991B1B;margin-bottom:24px;">
+  ⚠️ <strong>Disclaimer:</strong> This plan is AI-generated for informational purposes only.
+  Consult a certified fitness professional or doctor before starting any new program.
+</div>
+
+<a href="{% url 'recommendations:index' %}" class="btn-primary-custom">🔄 Regenerate Plan</a>
+
+{% endif %}
+{% endblock %}

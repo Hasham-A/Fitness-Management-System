@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}FitAI{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+ 
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+{% if user.is_authenticated %}
+<!-- ═══ SIDEBAR ═══════════════════════════════════════════════ -->
+<nav class="sidebar">
+  <a class="sidebar-brand" href="{% url 'dashboard:home' %}">
+    <div class="logo-icon">⚡</div>
+    <span>FitAI</span>
+  </a>
+
+  <div class="sidebar-nav mt-2">
+    <div class="nav-section-label">Main</div>
+    <a href="{% url 'dashboard:home' %}"         class="{% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+
+    <div class="nav-section-label">Track</div>
+    <a href="{% url 'workouts:log' %}"           class="{% if request.resolver_match.app_name == 'workouts' and 'log' in request.path %}active{% endif %}">
+      <i class="bi bi-lightning-charge-fill"></i> Log Workout
+    </a>
+    <a href="{% url 'workouts:history' %}"       class="{% if 'history' in request.path and 'workouts' in request.path %}active{% endif %}">
+      <i class="bi bi-clock-history"></i> Workout History
+    </a>
+    <a href="{% url 'meals:log' %}"              class="{% if 'meals' in request.path and 'log' in request.path %}active{% endif %}">
+      <i class="bi bi-egg-fried"></i> Log Meal
+    </a>
+    <a href="{% url 'meals:history' %}"          class="{% if 'meals' in request.path and 'history' in request.path %}active{% endif %}">
+      <i class="bi bi-journal-text"></i> Meal History
+    </a>
+
+    <div class="nav-section-label">AI</div>
+    <a href="{% url 'recommendations:index' %}"  class="{% if request.resolver_match.app_name == 'recommendations' %}active{% endif %}">
+      <i class="bi bi-robot"></i> AI Plan
+    </a>
+
+    <div class="nav-section-label">Account</div>
+    <a href="{% url 'accounts:profile' %}"       class="{% if request.resolver_match.app_name == 'accounts' and 'profile' in request.path %}active{% endif %}">
+      <i class="bi bi-person-circle"></i> My Profile
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="{% url 'accounts:logout' %}">
+      <i class="bi bi-box-arrow-left"></i> Logout
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN WRAPPER ══════════════════════════════════════════ -->
+<div class="main-wrapper">
+  <div class="topbar">
+    <div class="page-title">{% block page_title %}Dashboard{% endblock %}</div>
+    <div class="topbar-actions">
+      <div class="user-pill">
+        <div class="avatar">{{ user.username|first|upper }}</div>
+        {{ user.get_full_name|default:user.username }}
+      </div>
+      <a href="{% url 'accounts:logout' %}" class="logout-btn">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </a>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <!-- Django messages -->
+    {% for msg in messages %}
+      <div class="alert-custom alert-{{ msg.tags }}-custom">
+        {{ msg }}
+      </div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+{% else %}
+  <!-- Not authenticated — just render the block (login/register pages) -->
+  {% block auth_content %}{% endblock %}
+{% endif %}
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('form').forEach(function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.dataset.submitted === 'true') {
+          event.preventDefault();
+          return;
+        }
+        form.dataset.submitted = 'true';
+
+        var submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitButton) {
+          submitButton.disabled = true;
+          if (submitButton.tagName.toLowerCase() === 'button') {
+            submitButton.textContent = 'Processing...';
+          }
+        }
+      });
+    });
+  });
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

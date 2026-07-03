@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Workout History — FitAI{% endblock %}
+{% block page_title %}Workout History{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mb-4">
+  <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div style="color:var(--muted);font-size:14px;">{{ workouts.count }} session(s) logged</div>
+    <a href="{% url 'workouts:log' %}" class="btn-primary-custom">+ Log Workout</a>
+  </div>
+</div>
+
+{% if workouts %}
+<div class="card">
+  <div style="overflow-x:auto;">
+    <table class="table table-custom w-100 mb-0">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Duration</th>
+          <th>Steps</th>
+          <th>Intensity</th>
+          <th>Calories Burned</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for w in workouts %}
+        <tr>
+          <td style="font-weight:500;">{{ w.date }}</td>
+          <td>
+            <span class="badge-custom" style="background:#EEF2FF;color:#3730A3;">
+              {{ w.get_workout_type_display }}
+            </span>
+          </td>
+          <td>{{ w.duration }} min</td>
+          <td>{{ w.steps|default:"—" }}</td>
+          <td>
+            <span style="font-weight:600;">{{ w.intensity }}/10</span>
+          </td>
+          <td>
+            {% if w.calories_predicted %}
+              <span style="font-weight:700;color:var(--primary);">
+                {{ w.calories_predicted|floatformat:0 }} kcal
+              </span>
+            {% else %}
+              <span style="color:var(--muted);">N/A</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="table-actions">
+              <a href="{% url 'workouts:update' w.pk %}" class="btn-secondary-custom">Edit</a>
+              <a href="{% url 'workouts:delete' w.pk %}" class="btn-secondary-custom" style="background:#FEE2E2;color:#B91C1C;border-color:transparent;">Delete</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="card p-5" style="text-align:center;">
+  <div style="font-size:48px;margin-bottom:12px;">🏋️</div>
+  <div style="font-size:18px;font-weight:700;margin-bottom:8px;">No workouts yet</div>
+  <div style="color:var(--muted);font-size:14px;margin-bottom:20px;">
+    Start logging your exercise sessions to track your progress
+  </div>
+  <a href="{% url 'workouts:log' %}" class="btn-primary-custom"
+     style="display:inline-block;">Log Your First Workout</a>
+</div>
+{% endif %}
+
+{% endblock %}
