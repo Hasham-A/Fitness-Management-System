@@ -55,4 +55,4 @@ python manage.py runserver
 
 ## Developer
 
-**Hasham Amar** — BS Computer Science, Islamia University of Bahawalpur (2022–2026)
+**Hasham Amir** — BS Computer Science, Islamia University of Bahawalpur (2022–2026)
